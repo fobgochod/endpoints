@@ -1,0 +1,95 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.fobgochod.endpoints</id>
+    <name>Endpoints</name>
+    <vendor>fobgochod</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
+
+    <resource-bundle>messages.EndpointsBundle</resource-bundle>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Endpoints View" anchor="right"
+                    factoryClass="com.fobgochod.endpoints.EndpointsWindowFactory"
+                    order="last"
+                    doNotActivateOnStart="true" icon="/icons/logo_13x13.svg"/>
+
+        <applicationConfigurable parentId="tools"
+                                 id="endpoints.view"
+                                 instance="com.fobgochod.endpoints.settings.EndpointsSettingsConfigurable"
+                                 key="configurable.display.name"/>
+        <applicationService serviceImplementation="com.fobgochod.endpoints.settings.EndpointsSettings"/>
+
+        <notificationGroup id="Endpoints Notification" displayType="BALLOON" key="notification.group.name"/>
+
+        <codeInsight.lineMarkerProvider language="JAVA"
+                                        implementationClass="com.fobgochod.endpoints.provider.EndpointsLineMarkerProvider"/>
+    </extensions>
+
+    <actions>
+        <group id="com.fobgochod.endpoints.action.editor.EditorActionGroup"
+               class="com.fobgochod.endpoints.action.editor.EditorActionGroup"
+               popup="true">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$Paste"/>
+
+            <action id="Endpoint.SelectEndpointAction"
+                    class="com.fobgochod.endpoints.action.editor.SelectEndpointAction"/>
+            <action id="Endpoint.ShowClassEndpointAction"
+                    class="com.fobgochod.endpoints.action.editor.ShowClassEndpointAction"/>
+            <action id="Endpoint.CopyPathEndpointAction"
+                    class="com.fobgochod.endpoints.action.editor.CopyPathEndpointAction"/>
+            <action id="Endpoint.CopyFullUrlEndpointAction"
+                    class="com.fobgochod.endpoints.action.editor.CopyFullUrlEndpointAction"/>
+        </group>
+
+        <group id="com.fobgochod.endpoints.action.http.HttpTestActionGroup"
+               class="com.fobgochod.endpoints.action.http.HttpTestActionGroup"
+               popup="true">
+            <action id="Endpoint.CopyDataAction"
+                    class="com.fobgochod.endpoints.action.http.CopyDataAction"/>
+            <action id="Endpoint.ReformatDataAction"
+                    class="com.fobgochod.endpoints.action.http.ReformatDataAction"/>
+        </group>
+
+        <action id="Endpoint.ClassToJsonAction" class="com.fobgochod.endpoints.action.tool.ClassToJsonAction">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+        <group id="com.fobgochod.endpoints.action.toolbar.ToolbarActionGroup"
+               class="com.fobgochod.endpoints.action.toolbar.ToolbarActionGroup">
+            <action id="Endpoint.RefreshTreeAction"
+                    class="com.fobgochod.endpoints.action.toolbar.RefreshTreeAction"/>
+            <separator/>
+            <action id="Endpoint.HttpMethodFilterAction"
+                    class="com.fobgochod.endpoints.action.toolbar.filter.HttpMethodFilterAction"/>
+            <action id="Endpoint.ModuleFilterAction"
+                    class="com.fobgochod.endpoints.action.toolbar.filter.ModuleFilterAction"/>
+            <separator/>
+            <action id="Endpoint.ToggleFlattenTreeAction"
+                    class="com.fobgochod.endpoints.action.toolbar.tree.ToggleFlattenTreeAction"/>
+            <action id="Endpoint.ToggleScanLibraryAction"
+                    class="com.fobgochod.endpoints.action.toolbar.tree.ToggleScanLibraryAction"/>
+            <action id="Endpoint.ExpandTreeAction"
+                    class="com.fobgochod.endpoints.action.toolbar.tree.ExpandTreeAction"/>
+            <action id="Endpoint.CollapseTreeAction"
+                    class="com.fobgochod.endpoints.action.toolbar.tree.CollapseTreeAction"/>
+            <separator/>
+            <action id="Endpoint.ShowSettingsAction"
+                    class="com.fobgochod.endpoints.action.toolbar.ShowSettingsAction"/>
+        </group>
+
+        <group id="com.fobgochod.endpoints.action.tree.TreeActionGroup"
+               class="com.fobgochod.endpoints.action.tree.TreeActionGroup"
+               popup="true">
+            <action id="Endpoint.NavigateToClassAction"
+                    class="com.fobgochod.endpoints.action.tree.NavigateToClassAction"/>
+            <action id="Endpoint.NavigateToMethodAction"
+                    class="com.fobgochod.endpoints.action.tree.NavigateToMethodAction"/>
+            <action id="Endpoint.CopyPathAction"
+                    class="com.fobgochod.endpoints.action.tree.CopyPathAction"/>
+            <action id="Endpoint.CopyFullUrlAction"
+                    class="com.fobgochod.endpoints.action.tree.CopyFullUrlAction"/>
+        </group>
+    </actions>
+</idea-plugin>
