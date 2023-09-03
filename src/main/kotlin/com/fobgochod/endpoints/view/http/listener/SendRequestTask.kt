@@ -5,6 +5,7 @@ import com.fobgochod.endpoints.framework.PsiFileUtils
 import com.fobgochod.endpoints.settings.EndpointsSettings
 import com.fobgochod.endpoints.util.EndpointsBundle.message
 import com.fobgochod.endpoints.util.EndpointsNotify
+import com.fobgochod.endpoints.util.GsonUtils
 import com.fobgochod.endpoints.util.PathUtils
 import com.fobgochod.endpoints.view.http.EndpointsTestPane
 import com.fobgochod.endpoints.view.tree.node.EndpointNode
@@ -44,14 +45,17 @@ internal class SendRequestTask(private val testPane: EndpointsTestPane) :
 
         val uri = testPane.httpServer.text
         val body = testPane.bodyPane.text
-        val headers = testPane.headersPane.elements
-        val paths = mutableMapOf<String, String>()
-        testPane.pathsPane.elements.forEach {
-            paths[it.key] = it.value
-        }
-        val params = testPane.paramsPane.elements
-        val param = if (params.isEmpty()) "" else "?" + params.joinToString("&") {
+        val params = GsonUtils.toMap(testPane.paramsPane.text)
+        val param = if (params.isEmpty()) "" else "?" + params.entries.joinToString("&") {
             it.key + "=" + it.value
+        }
+
+        val paths = GsonUtils.toMap(testPane.pathsPane.text).entries.associate {
+            it.key to it.value.toString()
+        }
+
+        val headers = GsonUtils.toMap(testPane.headersPane.text).entries.associate {
+            it.key to it.value.toString()
         }
 
         method = testPane.httpMethod.selectedItem as HttpMethod
@@ -87,7 +91,7 @@ internal class SendRequestTask(private val testPane: EndpointsTestPane) :
 
         val selectedPath = PsiFileUtils.getSelectedPath(project)
         if (selectedPath is EndpointNode) {
-            testPane.apply(selectedPath.source)
+            testPane.reset(selectedPath.source)
         }
     }
 

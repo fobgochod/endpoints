@@ -3,8 +3,6 @@ package com.fobgochod.endpoints.view.http.editor
 import com.fobgochod.endpoints.action.http.HttpTestActionGroup
 import com.fobgochod.endpoints.util.EndpointsBundle.message
 import com.fobgochod.endpoints.util.EndpointsNotify
-import com.intellij.ide.highlighter.HtmlFileType
-import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.ide.ui.customization.CustomizationUtil
 import com.intellij.json.JsonFileType
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -12,7 +10,6 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.fileTypes.FileType
-import com.intellij.openapi.fileTypes.FileTypes
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFileFactory
@@ -22,23 +19,12 @@ import com.intellij.util.LocalTimeCounter
 import com.intellij.util.ui.JBUI
 import javax.swing.border.Border
 
-class HttpTextField(project: Project, fileType: FileType = JSON_FILE_TYPE) : EditorTextField(project, fileType) {
-
-    companion object {
-        val TEXT_FILE_TYPE: FileType = FileTypes.PLAIN_TEXT
-        val JSON_FILE_TYPE: FileType = JsonFileType.INSTANCE
-        val HTML_FILE_TYPE: FileType = HtmlFileType.INSTANCE
-        val XML_FILE_TYPE: FileType = XmlFileType.INSTANCE
-    }
+class HttpTextField(project: Project, fileType: FileType = JsonFileType.INSTANCE) : EditorTextField(project, fileType) {
 
     init {
         isOneLineMode = false
 
-        CustomizationUtil.installPopupHandler(
-            this,
-            HttpTestActionGroup::class.java.name,
-            ActionPlaces.POPUP
-        )
+        CustomizationUtil.installPopupHandler(this, HttpTestActionGroup::class.java.name, ActionPlaces.POPUP)
     }
 
     private fun setupCustomTextFieldEditor(editor: EditorEx) {
@@ -110,14 +96,7 @@ class HttpTextField(project: Project, fileType: FileType = JSON_FILE_TYPE) : Edi
     private fun createDocument(text: String, fileType: FileType): Document? {
         val factory = PsiFileFactory.getInstance(project)
         val stamp = LocalTimeCounter.currentTime()
-        val psiFile = factory.createFileFromText(
-            message("plugin.name"),
-            fileType,
-            text,
-            stamp,
-            true,
-            false
-        )
+        val psiFile = factory.createFileFromText(message("plugin.name"), fileType, text, stamp, true, false)
         return PsiDocumentManager.getInstance(project).getDocument(psiFile)
     }
 }

@@ -4,6 +4,7 @@ import com.fobgochod.endpoints.action.EndpointsAction
 import com.fobgochod.endpoints.framework.PsiFileUtils
 import com.fobgochod.endpoints.util.EndpointsBundle
 import com.fobgochod.endpoints.util.EndpointsToolkit
+import com.fobgochod.endpoints.util.ParamUtils
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -25,7 +26,7 @@ class ClassToJsonAction : EndpointsAction() {
         val psiElement = e.getData(CommonDataKeys.PSI_ELEMENT) ?: return
         val psiClass = getPsiClass(psiElement) ?: return
 
-        val json = JsonHelper.classToJson(psiClass)
+        val json = ParamUtils.classToJson(psiClass)
         EndpointsToolkit.copy(json)
     }
 

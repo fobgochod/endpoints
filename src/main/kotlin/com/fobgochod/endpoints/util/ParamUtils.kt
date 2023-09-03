@@ -1,59 +1,44 @@
-package com.fobgochod.endpoints.action.tool
+package com.fobgochod.endpoints.util
 
 import com.fobgochod.endpoints.domain.spring.RequestParams
 import com.fobgochod.endpoints.framework.PsiJavaUtils
-import com.fobgochod.endpoints.util.GsonUtils
 import com.fobgochod.mock.Mock
 import com.fobgochod.mock.enums.BaseType
-import com.intellij.lang.jvm.types.JvmType
+import com.intellij.lang.jvm.JvmParameter
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import kotlin.reflect.jvm.jvmName
 
 @Suppress("UnstableApiUsage")
-object JsonHelper {
+object ParamUtils {
 
     fun classToJson(psiClass: PsiClass): String {
         val jsonMap = classToMap(psiClass, true)
         return GsonUtils.toJson(jsonMap)
     }
 
-    fun getRequestBody(psiMethod: PsiMethod): String {
-        val jvmType = findRequestBody(psiMethod)
+    fun getRequestBody(psiMethod: PsiMethod, requestParams: RequestParams): String {
+        val parameters = psiMethod.parameters
+        val jvmType = parameters
+                .filter { getParameterAnnotation(it, requestParams) != null }
+                .map { it.type }
+                .firstOrNull()
         if (jvmType is PsiType) {
-            return if (jvmType is PsiClassReferenceType) {
-                val jsonMap = mockField(jvmType, jvmType.resolve(), true)
-                GsonUtils.toJson(jsonMap)
+            val obj = if (jvmType is PsiClassReferenceType) {
+                mockField(jvmType, jvmType.resolve(), true)
             } else {
-                val jsonMap = mockField(jvmType)
-                GsonUtils.toJson(jsonMap)
+                mockField(jvmType)
             }
+            GsonUtils.toJson(obj)
         }
         return ""
     }
 
-    private fun getJavaBaseTypeValue(paramType: String): Any? {
-        val baseType = BaseType.get(paramType) ?: return null
-        return Mock.mock(baseType.clazz)
-    }
-
-    private fun findRequestBody(psiMethod: PsiMethod): JvmType? {
-        val parameters = psiMethod.parameters
-        return parameters.filter {
-            it.annotations.any { anno ->
-                anno.qualifiedName == RequestParams.RequestBody.qualifiedName
-            }
-        }.map { it.type }.firstOrNull()
-    }
-
-    fun findRequestParam(psiMethod: PsiMethod, requestParams: RequestParams): Map<String, Any> {
+    fun getRequestParams(psiMethod: PsiMethod, requestParams: RequestParams): Map<String, Any> {
         val parameters = psiMethod.parameters
         val params = mutableMapOf<String, Any>()
         for (parameter in parameters) {
-            val annotation = parameter.annotations.filter { anno ->
-                anno.qualifiedName == requestParams.qualifiedName
-            }.map { it as PsiAnnotation }.firstOrNull()
-
+            val annotation = getParameterAnnotation(parameter, requestParams)
             val jvmType = parameter.type
             if (annotation != null && jvmType is PsiType) {
                 val name = PsiJavaUtils.getAnnotationValue(annotation, "name") ?: parameter.name
@@ -65,6 +50,19 @@ object JsonHelper {
         }
         return params
     }
+
+    private fun getJavaBaseTypeValue(paramType: String): Any? {
+        val baseType = BaseType.get(paramType) ?: return null
+        return Mock.mock(baseType.clazz)
+    }
+
+    private fun getParameterAnnotation(parameter: JvmParameter, annotation: RequestParams): PsiAnnotation? {
+        return parameter.annotations
+                .filter { it.qualifiedName == annotation.qualifiedName }
+                .map { it as PsiAnnotation }
+                .firstOrNull()
+    }
+
 
     private fun classToMap(psiClass: PsiClass, recursion: Boolean): Map<String, Any?> {
         val attributes: MutableMap<String, Any?> = mutableMapOf()

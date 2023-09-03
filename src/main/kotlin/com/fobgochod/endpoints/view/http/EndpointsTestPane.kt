@@ -3,17 +3,14 @@ package com.fobgochod.endpoints.view.http
 import com.fobgochod.endpoints.domain.HttpMethod
 import com.fobgochod.endpoints.domain.node.EndpointEntity
 import com.fobgochod.endpoints.settings.EndpointsSettings
-import com.fobgochod.endpoints.settings.HeaderListTable
 import com.fobgochod.endpoints.util.EndpointsBundle.message
+import com.fobgochod.endpoints.util.GsonUtils
 import com.fobgochod.endpoints.view.http.editor.HttpTextField
 import com.fobgochod.endpoints.view.http.listener.SendRequestListener
-import com.fobgochod.endpoints.view.http.listener.SendRequestTask
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.components.JBTextField
-import com.jetbrains.rd.framework.base.deepClonePolymorphic
 import java.awt.BorderLayout
 import java.util.*
 import javax.swing.DefaultComboBoxModel
@@ -31,9 +28,9 @@ class EndpointsTestPane(val project: Project) : JPanel(BorderLayout()) {
     private val sendRequest = JButton(message("endpoint.http.test.button.text"))
 
     val tabbedPane = JBTabbedPane()
-    val paramsPane = HeaderListTable()
-    val pathsPane = HeaderListTable()
-    val headersPane = HeaderListTable()
+    val paramsPane = HttpTextField(project)
+    val pathsPane = HttpTextField(project)
+    val headersPane = HttpTextField(project)
     val bodyPane = HttpTextField(project)
     val responsePane = HttpTextField(project)
     val console = JTextPane()
@@ -46,9 +43,9 @@ class EndpointsTestPane(val project: Project) : JPanel(BorderLayout()) {
 
         sendRequest.addActionListener(SendRequestListener(this))
 
-        tabbedPane.add(message("endpoint.http.test.tab1.title"), paramsPane.component)
-        tabbedPane.add(message("endpoint.http.test.tab2.title"), pathsPane.component)
-        tabbedPane.add(message("endpoint.http.test.tab3.title"), headersPane.component)
+        tabbedPane.add(message("endpoint.http.test.tab1.title"), paramsPane)
+        tabbedPane.add(message("endpoint.http.test.tab2.title"), pathsPane)
+        tabbedPane.add(message("endpoint.http.test.tab3.title"), headersPane)
         tabbedPane.add(message("endpoint.http.test.tab4.title"), bodyPane)
         tabbedPane.add(message("endpoint.http.test.tab5.title"), responsePane)
         tabbedPane.add(message("endpoint.http.test.tab6.title"), console)
@@ -57,30 +54,30 @@ class EndpointsTestPane(val project: Project) : JPanel(BorderLayout()) {
     }
 
     fun apply(entity: EndpointEntity) {
-        entity.reset()
-        entity.params.addAll(paramsPane.elements.deepClonePolymorphic())
-        entity.paths.addAll(pathsPane.elements.deepClonePolymorphic())
-        entity.headers.addAll(headersPane.elements.deepClonePolymorphic())
-        entity.body = bodyPane.text
-    }
-
-    fun reset(entity: EndpointEntity) {
         httpMethod.selectedItem = entity.method
         httpServer.text = entity.getRequestUrl()
 
-        paramsPane.setValues(entity.params.deepClonePolymorphic())
-        pathsPane.setValues(entity.paths.deepClonePolymorphic())
-        headersPane.setValues(entity.headers.deepClonePolymorphic())
+        paramsPane.text = GsonUtils.toJson(entity.params)
+        pathsPane.text = GsonUtils.toJson(entity.paths)
+        headersPane.text = GsonUtils.toJson(entity.headers)
         bodyPane.text = entity.body
     }
 
-    fun reset() {
+    fun reset(entity: EndpointEntity) {
+        entity.clear()
+        entity.params.putAll(GsonUtils.toMap(paramsPane.text))
+        entity.paths.putAll(GsonUtils.toMap(pathsPane.text))
+        entity.headers.putAll(GsonUtils.toMap(headersPane.text))
+        entity.body = bodyPane.text
+    }
+
+    fun empty() {
         httpMethod.selectedItem = HttpMethod.GET
         httpServer.text = state.getUri("")
 
-        paramsPane.setValues(mutableListOf())
-        pathsPane.setValues(mutableListOf())
-        headersPane.setValues(mutableListOf())
+        paramsPane.text = "{}"
+        pathsPane.text = "{}"
+        headersPane.text = "{}"
         bodyPane.text = ""
         responsePane.text = ""
     }

@@ -1,7 +1,6 @@
 package com.fobgochod.endpoints.domain.node
 
-import com.fobgochod.endpoints.action.tool.JsonHelper
-import com.fobgochod.endpoints.domain.HttpHeader
+import com.fobgochod.endpoints.util.ParamUtils
 import com.fobgochod.endpoints.domain.HttpMethod
 import com.fobgochod.endpoints.domain.spring.RequestParams
 import com.fobgochod.endpoints.settings.EndpointsSettings
@@ -10,20 +9,19 @@ import com.intellij.psi.PsiMethod
 import javax.swing.Icon
 
 class EndpointEntity(
-    var method: HttpMethod = HttpMethod.REQUEST,
-    var path: String = "",
-    val psiMethod: PsiMethod,
-    icon: Icon = EndpointsIcons.getMethodIcon(method)
+        var method: HttpMethod = HttpMethod.REQUEST,
+        var path: String = "",
+        val psiMethod: PsiMethod,
+        icon: Icon = EndpointsIcons.getMethodIcon(method)
 ) : BaseEntity(path, icon) {
 
     private val state = EndpointsSettings.instance
 
-    private var cache: Boolean = false
-    val params: MutableList<HttpHeader> = mutableListOf()
-    val paths: MutableList<HttpHeader> = mutableListOf()
-    val headers: MutableList<HttpHeader> = mutableListOf()
+    var cache: Boolean = false
+    val params = mutableMapOf<String, Any?>()
+    val paths = mutableMapOf<String, Any?>()
+    val headers = mutableMapOf<String, Any?>()
     var body: String = ""
-
 
     fun getSelectIcon(): Icon {
         return EndpointsIcons.getMethodIcon(method, true)
@@ -33,29 +31,23 @@ class EndpointEntity(
         return state.getUri(path)
     }
 
-    fun apply() {
+    fun reset() {
         if (this.cache) {
             return
         }
-        val params = JsonHelper.findRequestParam(psiMethod, RequestParams.RequestParam).map {
-            HttpHeader(it.key, it.value.toString())
-        }
-        val paths = JsonHelper.findRequestParam(psiMethod, RequestParams.PathVariable).map {
-            HttpHeader(it.key, it.value.toString())
-        }
-        val headers = state.httpHeaders.stream().map {
-            HttpHeader(it.key, it.value)
-        }.toList()
-        val body = JsonHelper.getRequestBody(psiMethod)
+        val params = ParamUtils.getRequestParams(psiMethod, RequestParams.RequestParam)
+        val paths = ParamUtils.getRequestParams(psiMethod, RequestParams.PathVariable)
+        val headers = state.httpHeaders.associate { it.key to it.value }
+        val body = ParamUtils.getRequestBody(psiMethod, RequestParams.RequestBody)
 
-        this.params.addAll(params)
-        this.paths.addAll(paths)
-        this.headers.addAll(headers)
+        this.params.putAll(params)
+        this.paths.putAll(paths)
+        this.headers.putAll(headers)
         this.body = body
         this.cache = true
     }
 
-    fun reset() {
+    fun clear() {
         this.params.clear()
         this.paths.clear()
         this.headers.clear()

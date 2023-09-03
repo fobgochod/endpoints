@@ -46,6 +46,8 @@
         <group id="com.fobgochod.endpoints.action.http.HttpTestActionGroup"
                class="com.fobgochod.endpoints.action.http.HttpTestActionGroup"
                popup="true">
+            <action id="Endpoint.ResetDataAction"
+                    class="com.fobgochod.endpoints.action.http.ResetDataAction"/>
             <action id="Endpoint.CopyDataAction"
                     class="com.fobgochod.endpoints.action.http.CopyDataAction"/>
             <action id="Endpoint.ReformatDataAction"

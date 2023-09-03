@@ -12,13 +12,13 @@ class TreeSelectionListener(val project: Project) : TreeSelectionListener {
     override fun valueChanged(e: TreeSelectionEvent?) {
         val view = EndpointsManager.getView(project)
 
-        view.testPanel.reset()
+        view.testPanel.empty()
         val selectedPath = PsiFileUtils.getSelectedPath(project)
         if (selectedPath is EndpointNode) {
             val entity = selectedPath.source
 
-            entity.apply()
-            view.testPanel.reset(entity)
+            entity.reset()
+            view.testPanel.apply(entity)
         }
     }
 }
