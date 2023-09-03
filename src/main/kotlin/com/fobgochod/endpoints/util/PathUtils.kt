@@ -40,7 +40,7 @@ object PathUtils {
                 while (pos < length) {
                     if (chars[pos] == SUFFIX) {
                         val endPos = pos
-                        val pathName = String(chars, startPos + 1, endPos - startPos - 1)
+                        val pathName = String(chars, startPos + 1, endPos - startPos - 1).trimEnd(':', '.', '+')
                         val pathValue: String = paths.getOrDefault(pathName, "")
                         builder.replace(startPos, endPos + 1, pathValue)
                         val change = pathValue.length - (endPos - startPos + 1)

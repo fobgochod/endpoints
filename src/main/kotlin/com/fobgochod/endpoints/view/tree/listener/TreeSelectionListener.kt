@@ -16,8 +16,7 @@ class TreeSelectionListener(val project: Project) : TreeSelectionListener {
         val selectedPath = PsiFileUtils.getSelectedPath(project)
         if (selectedPath is EndpointNode) {
             val entity = selectedPath.source
-
-            entity.reset()
+            entity.reset(false)
             view.testPanel.apply(entity)
         }
     }

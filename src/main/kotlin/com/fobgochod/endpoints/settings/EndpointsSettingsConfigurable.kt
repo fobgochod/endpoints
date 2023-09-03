@@ -33,6 +33,7 @@ class EndpointsSettingsConfigurable : BoundSearchableConfigurable(
     private val hideEmptyMiddlePackages get() = CheckboxDescriptor(IdeBundle.message("action.hide.empty.middle.packages"), state::flattenPackages)
     private val showClass get() = CheckboxDescriptor(message("settings.system.show.class"), state::showClass)
     private val showMethod get() = CheckboxDescriptor(message("settings.system.show.method"), state::showMethod)
+    private val cacheParam get() = CheckboxDescriptor(message("settings.http.test.cache.param"), state::cacheParam)
     // @formatter:on
 
     override fun createPanel(): DialogPanel {
@@ -66,6 +67,7 @@ class EndpointsSettingsConfigurable : BoundSearchableConfigurable(
 
                 row(message("settings.http.test.http.timeout")) {
                     intTextField().bindIntText(state::httpTimeout)
+                    checkBox(cacheParam)
                 }
 
                 row(message("settings.http.test.default.port")) {

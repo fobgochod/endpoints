@@ -26,6 +26,9 @@ class EndpointsSettingsState : BaseState() {
     @get:OptionTag("HTTP_TIMEOUT")
     var httpTimeout by property(60)
 
+    @get:OptionTag("CACHE_PARAM")
+    var cacheParam by property(true)
+
     @get:OptionTag("HTTP_PORT")
     var httpPort by property(8080)
 

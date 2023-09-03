@@ -1,10 +1,10 @@
 package com.fobgochod.endpoints.domain.node
 
-import com.fobgochod.endpoints.util.ParamUtils
 import com.fobgochod.endpoints.domain.HttpMethod
 import com.fobgochod.endpoints.domain.spring.RequestParams
 import com.fobgochod.endpoints.settings.EndpointsSettings
 import com.fobgochod.endpoints.util.EndpointsIcons
+import com.fobgochod.endpoints.util.ParamUtils
 import com.intellij.psi.PsiMethod
 import javax.swing.Icon
 
@@ -17,7 +17,7 @@ class EndpointEntity(
 
     private val state = EndpointsSettings.instance
 
-    var cache: Boolean = false
+    private var first = true
     val params = mutableMapOf<String, Any?>()
     val paths = mutableMapOf<String, Any?>()
     val headers = mutableMapOf<String, Any?>()
@@ -31,20 +31,24 @@ class EndpointEntity(
         return state.getUri(path)
     }
 
-    fun reset() {
-        if (this.cache) {
-            return
+    fun reset(force: Boolean = false) {
+        if (force || first || !state.cacheParam) {
+            this.reset()
+            first = false
         }
+    }
+
+    fun reset() {
         val params = ParamUtils.getRequestParams(psiMethod, RequestParams.RequestParam)
         val paths = ParamUtils.getRequestParams(psiMethod, RequestParams.PathVariable)
         val headers = state.httpHeaders.associate { it.key to it.value }
         val body = ParamUtils.getRequestBody(psiMethod, RequestParams.RequestBody)
 
+        this.clear()
         this.params.putAll(params)
         this.paths.putAll(paths)
         this.headers.putAll(headers)
         this.body = body
-        this.cache = true
     }
 
     fun clear() {

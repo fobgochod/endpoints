@@ -19,9 +19,7 @@ class ResetDataAction : EndpointsAction() {
     override fun actionPerformed(e: AnActionEvent, project: Project) {
         val selectPath = PsiFileUtils.getSelectedPath(project)
         if (selectPath is EndpointNode) {
-            selectPath.source.cache = false
-            selectPath.source.clear()
-            selectPath.source.reset()
+            selectPath.source.reset(true)
             val view = EndpointsManager.getView(project)
             view.testPanel.apply(selectPath.source)
         }

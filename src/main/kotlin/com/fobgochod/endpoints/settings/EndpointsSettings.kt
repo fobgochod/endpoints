@@ -55,6 +55,12 @@ class EndpointsSettings : PersistentStateComponent<EndpointsSettingsState> {
             state.httpTimeout = value
         }
 
+    var cacheParam: Boolean
+        get() = state.cacheParam
+        set(value) {
+            state.cacheParam = value
+        }
+
     var httpPort: Int
         get() = state.httpPort
         set(value) {
