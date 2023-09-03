@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * 模拟数据配置类
@@ -82,14 +83,11 @@ public class MockConfig {
 
     public MockConfig init(Type type) {
         if (type instanceof ParameterizedType) {
-            Class<?> clazz = (Class) ((ParameterizedType) type).getRawType();
+            Class<?> clazz = (Class<?>) ((ParameterizedType) type).getRawType();
             Type[] types = ((ParameterizedType) type).getActualTypeArguments();
-            TypeVariable[] typeVariables = clazz.getTypeParameters();
-            if (typeVariables.length > 0) {
-                for (int index = 0; index < typeVariables.length; index++) {
-                    typeVariableCache.put(typeVariables[index].getName(), types[index]);
-                }
-            }
+            TypeVariable<?>[] typeVariables = clazz.getTypeParameters();
+            IntStream.range(0, typeVariables.length)
+                    .forEach(index -> typeVariableCache.put(typeVariables[index].getName(), types[index]));
         }
         return this;
     }

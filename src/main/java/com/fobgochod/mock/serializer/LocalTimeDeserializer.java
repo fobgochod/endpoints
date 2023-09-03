@@ -10,7 +10,7 @@ import java.time.LocalTime;
 public class LocalTimeDeserializer extends JsonDeserializer<LocalTime> {
 
     @Override
-    public LocalTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public LocalTime deserialize(JsonParser p, DeserializationContext context) throws IOException {
         return LocalTime.parse(p.getValueAsString(), Constants.TIME_FORMATTER);
     }
 }

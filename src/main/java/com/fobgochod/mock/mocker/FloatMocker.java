@@ -10,8 +10,8 @@ import com.fobgochod.mock.util.RandomUtils;
 public class FloatMocker implements Mocker<Float> {
 
     @Override
-    public Float mock(MockConfig mockConfig) {
-        return RandomUtils.nextFloat(mockConfig.getFloatRange()[0], mockConfig.getFloatRange()[1]);
+    public Float mock(MockConfig config) {
+        return RandomUtils.nextFloat(config.getFloatRange()[0], config.getFloatRange()[1]);
     }
 
 }

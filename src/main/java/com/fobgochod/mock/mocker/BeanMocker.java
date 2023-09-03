@@ -12,32 +12,32 @@ import java.util.Map.Entry;
 
 public class BeanMocker implements Mocker<Object> {
 
-    private final Class clazz;
+    private final Class<?> clazz;
 
-    BeanMocker(Class clazz) {
+    BeanMocker(Class<?> clazz) {
         this.clazz = clazz;
     }
 
     @Override
-    public Object mock(MockConfig mockConfig) {
+    public Object mock(MockConfig config) {
         try {
             // fixme 解决方案不够优雅
-            if (mockConfig.isEnabledCircle()) {
-                Object cacheBean = mockConfig.getCacheBean(clazz.getName());
+            if (config.isEnabledCircle()) {
+                Object cacheBean = config.getCacheBean(clazz.getName());
                 if (cacheBean != null) {
                     return cacheBean;
                 }
             }
             Object result = clazz.getDeclaredConstructor().newInstance();
-            mockConfig.cacheBean(clazz.getName(), result);
-            for (Class<?> currentClass = clazz; currentClass != Object.class; currentClass = currentClass.getSuperclass()) {
+            config.cacheBean(clazz.getName(), result);
+            for (Class<?> current = clazz; current != Object.class; current = current.getSuperclass()) {
                 // 模拟有setter方法的字段
-                for (Entry<Field, Method> entry : ReflectionUtils.fieldAndSetterMethod(currentClass).entrySet()) {
+                for (Entry<Field, Method> entry : ReflectionUtils.fieldAndSetterMethod(current).entrySet()) {
                     Field field = entry.getKey();
                     if (field.isAnnotationPresent(MockIgnore.class)) {
                         continue;
                     }
-                    ReflectionUtils.setRefValue(result, entry.getValue(), new BaseMocker(field.getGenericType()).mock(mockConfig));
+                    ReflectionUtils.setRefValue(result, entry.getValue(), new BaseMocker<>(field.getGenericType()).mock(config));
                 }
             }
             return result;

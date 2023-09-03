@@ -10,7 +10,7 @@ import com.fobgochod.mock.util.RandomUtils;
 public class IntegerMocker implements Mocker<Integer> {
 
     @Override
-    public Integer mock(MockConfig mockConfig) {
-        return RandomUtils.nextInt(mockConfig.getIntRange()[0], mockConfig.getIntRange()[1]);
+    public Integer mock(MockConfig config) {
+        return RandomUtils.nextInt(config.getIntRange()[0], config.getIntRange()[1]);
     }
 }

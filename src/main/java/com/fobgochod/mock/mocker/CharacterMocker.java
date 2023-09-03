@@ -10,8 +10,8 @@ import com.fobgochod.mock.util.RandomUtils;
 public class CharacterMocker implements Mocker<Character> {
 
     @Override
-    public Character mock(MockConfig mockConfig) {
-        char[] charSeed = mockConfig.getCharSeed();
+    public Character mock(MockConfig config) {
+        char[] charSeed = config.getCharSeed();
         return charSeed[RandomUtils.nextInt(0, charSeed.length)];
     }
 

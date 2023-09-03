@@ -9,8 +9,8 @@ import java.util.Date;
 public class TimestampMocker extends AbstractDateMock<Timestamp> {
 
     @Override
-    public Timestamp mock(MockConfig mockConfig) {
-        super.mock(mockConfig);
+    public Timestamp mock(MockConfig config) {
+        super.mock(config);
         Date date = new Date(RandomUtils.nextLong(startTime, endTime));
         return Timestamp.from(date.toInstant());
     }

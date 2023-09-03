@@ -19,7 +19,7 @@ public class ClassMocker implements Mocker<Object> {
     }
 
     @Override
-    public Object mock(MockConfig mockConfig) {
+    public Object mock(MockConfig config) {
         Mocker<?> mocker;
         if (clazz.isArray()) {
             mocker = new ArrayMocker(clazz);
@@ -28,14 +28,14 @@ public class ClassMocker implements Mocker<Object> {
         } else if (Collection.class.isAssignableFrom(clazz)) {
             mocker = new CollectionMocker(clazz, genericTypes[0]);
         } else if (clazz.isEnum()) {
-            mocker = new EnumMocker(clazz);
+            mocker = new EnumMocker<>(clazz);
         } else {
-            mocker = mockConfig.getMocker(clazz);
+            mocker = config.getMocker(clazz);
             if (mocker == null) {
                 mocker = new BeanMocker(clazz);
             }
         }
-        return mocker.mock(mockConfig);
+        return mocker.mock(config);
     }
 
 }

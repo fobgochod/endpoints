@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 /**
  * Double对象模拟器
  */
-public class EnumMocker<T extends Enum<?>> implements Mocker<Object> {
+public class EnumMocker<T extends Enum<T>> implements Mocker<T> {
 
     private final Class<?> clazz;
 
@@ -19,8 +19,8 @@ public class EnumMocker<T extends Enum<?>> implements Mocker<Object> {
     }
 
     @Override
-    public T mock(MockConfig mockConfig) {
-        Enum<?>[] enums = mockConfig.getCacheEnum(clazz.getName());
+    public T mock(MockConfig config) {
+        Enum<?>[] enums = config.getCacheEnum(clazz.getName());
         if (enums == null) {
             try {
                 Field field = clazz.getDeclaredField("$VALUES");
@@ -29,7 +29,7 @@ public class EnumMocker<T extends Enum<?>> implements Mocker<Object> {
                 if (enums.length == 0) {
                     throw new MockException("空的enum不能模拟");
                 }
-                mockConfig.cacheEnum(clazz.getName(), enums);
+                config.cacheEnum(clazz.getName(), enums);
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new MockException(e);
             }

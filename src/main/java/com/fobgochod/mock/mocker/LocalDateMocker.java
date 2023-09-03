@@ -11,8 +11,8 @@ public class LocalDateMocker extends AbstractDateMock<LocalDate> {
 
 
     @Override
-    public LocalDate mock(MockConfig mockConfig) {
-        super.mock(mockConfig);
+    public LocalDate mock(MockConfig config) {
+        super.mock(config);
         long start = LocalDate.ofInstant(new Date(startTime).toInstant(), ZoneId.systemDefault()).toEpochDay();
         long end = LocalDate.ofInstant(new Date(endTime).toInstant(), ZoneId.systemDefault()).toEpochDay();
         return LocalDate.ofEpochDay(RandomUtils.nextLong(start, end));

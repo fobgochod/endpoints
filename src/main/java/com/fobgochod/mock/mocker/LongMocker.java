@@ -10,7 +10,7 @@ import com.fobgochod.mock.util.RandomUtils;
 public class LongMocker implements Mocker<Long> {
 
     @Override
-    public Long mock(MockConfig mockConfig) {
-        return RandomUtils.nextLong(mockConfig.getLongRange()[0], mockConfig.getLongRange()[1]);
+    public Long mock(MockConfig config) {
+        return RandomUtils.nextLong(config.getLongRange()[0], config.getLongRange()[1]);
     }
 }

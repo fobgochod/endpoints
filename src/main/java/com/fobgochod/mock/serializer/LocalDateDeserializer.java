@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
 
     @Override
-    public LocalDate deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public LocalDate deserialize(JsonParser p, DeserializationContext context) throws IOException {
         return LocalDate.parse(p.getValueAsString(), Constants.DATE_FORMATTER);
     }
 }

@@ -17,8 +17,8 @@ public class GenericMocker implements Mocker<Object> {
     }
 
     @Override
-    public Object mock(MockConfig mockConfig) {
-        return new BaseMocker(type.getRawType(), type.getActualTypeArguments()).mock(mockConfig);
+    public Object mock(MockConfig config) {
+        return new BaseMocker<>(type.getRawType(), type.getActualTypeArguments()).mock(config);
     }
 
 }

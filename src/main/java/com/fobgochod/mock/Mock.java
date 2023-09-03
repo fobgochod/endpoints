@@ -20,12 +20,12 @@ public class Mock {
     /**
      * 模拟数据
      *
-     * @param clazz      模拟数据类型
-     * @param mockConfig 模拟数据配置
+     * @param clazz  模拟数据类型
+     * @param config 模拟数据配置
      * @return 模拟数据对象
      */
-    public static <T> T mock(Class<T> clazz, MockConfig mockConfig) {
-        return new BaseMocker<T>(clazz).mock(mockConfig);
+    public static <T> T mock(Class<T> clazz, MockConfig config) {
+        return new BaseMocker<T>(clazz).mock(config);
     }
 
     /**
@@ -48,11 +48,11 @@ public class Mock {
      * </pre>
      *
      * @param typeReference 模拟数据类型
-     * @param mockConfig    模拟数据配置
+     * @param config        模拟数据配置
      * @return 模拟数据对象
      */
-    public static <T> T mock(TypeReference<T> typeReference, MockConfig mockConfig) {
-        return new BaseMocker<T>(typeReference.getType()).mock(mockConfig.init(typeReference.getType()));
+    public static <T> T mock(TypeReference<T> typeReference, MockConfig config) {
+        return new BaseMocker<T>(typeReference.getType()).mock(config.init(typeReference.getType()));
     }
 
 }

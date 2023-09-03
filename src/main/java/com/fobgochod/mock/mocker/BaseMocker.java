@@ -20,18 +20,18 @@ public class BaseMocker<T> implements Mocker<T> {
     }
 
     @Override
-    public T mock(MockConfig mockConfig) {
-        Mocker mocker;
-        if (type instanceof ParameterizedType) {
-            mocker = new GenericMocker((ParameterizedType) type);
-        } else if (type instanceof GenericArrayType) {
-            mocker = new ArrayMocker(type);
-        } else if (type instanceof TypeVariable) {
-            mocker = new BaseMocker(mockConfig.getVariableType(((TypeVariable) type).getName()));
+    public T mock(MockConfig config) {
+        Mocker<?> mocker;
+        if (type instanceof ParameterizedType parameterizedType) {
+            mocker = new GenericMocker(parameterizedType);
+        } else if (type instanceof GenericArrayType genericArrayType) {
+            mocker = new ArrayMocker(genericArrayType);
+        } else if (type instanceof TypeVariable<?> typeVariable) {
+            mocker = new BaseMocker<>(config.getVariableType(typeVariable.getName()));
         } else {
-            mocker = new ClassMocker((Class) type, genericTypes);
+            mocker = new ClassMocker((Class<?>) type, genericTypes);
         }
-        return (T) mocker.mock(mockConfig);
+        return (T) mocker.mock(config);
     }
 
 }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * 模拟Collection
@@ -25,18 +26,16 @@ public class CollectionMocker implements Mocker<Object> {
     }
 
     @Override
-    public Object mock(MockConfig mockConfig) {
-        int size = RandomUtils.nextSize(mockConfig.getSizeRange()[0], mockConfig.getSizeRange()[1]);
+    public Object mock(MockConfig config) {
+        int size = RandomUtils.nextSize(config.getSizeRange()[0], config.getSizeRange()[1]);
         Collection<Object> result;
         if (List.class.isAssignableFrom(clazz)) {
             result = new ArrayList<>(size);
         } else {
             result = new HashSet<>(size);
         }
-        BaseMocker baseMocker = new BaseMocker(genericType);
-        for (int index = 0; index < size; index++) {
-            result.add(baseMocker.mock(mockConfig));
-        }
+        BaseMocker<?> baseMocker = new BaseMocker<>(genericType);
+        IntStream.range(0, size).mapToObj(index -> baseMocker.mock(config)).forEach(result::add);
         return result;
     }
 

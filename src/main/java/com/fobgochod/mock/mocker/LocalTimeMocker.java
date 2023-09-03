@@ -8,8 +8,8 @@ import java.time.LocalTime;
 public class LocalTimeMocker extends AbstractDateMock<LocalTime> {
 
     @Override
-    public LocalTime mock(MockConfig mockConfig) {
-        super.mock(mockConfig);
+    public LocalTime mock(MockConfig config) {
+        super.mock(config);
         return LocalTime.ofNanoOfDay(RandomUtils.nextLong(startTime, endTime));
     }
 }

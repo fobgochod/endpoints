@@ -11,8 +11,8 @@ import java.util.Date;
 public class DateMocker extends AbstractDateMock<Date> {
 
     @Override
-    public Date mock(MockConfig mockConfig) {
-        super.mock(mockConfig);
+    public Date mock(MockConfig config) {
+        super.mock(config);
         return new Date(RandomUtils.nextLong(startTime, endTime));
     }
 }

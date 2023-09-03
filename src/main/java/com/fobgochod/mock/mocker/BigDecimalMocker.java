@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 public class BigDecimalMocker implements Mocker<BigDecimal> {
 
     @Override
-    public BigDecimal mock(MockConfig mockConfig) {
-        return BigDecimal.valueOf(RandomUtils.nextDouble(mockConfig.getDoubleRange()[0], mockConfig.getDoubleRange()[1]));
+    public BigDecimal mock(MockConfig config) {
+        return BigDecimal.valueOf(RandomUtils.nextDouble(config.getDoubleRange()[0], config.getDoubleRange()[1]));
     }
 
 }

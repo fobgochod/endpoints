@@ -107,6 +107,13 @@ public class MockTest {
         System.out.println("DayEnum: " + dayEnum);
     }
 
+    @Test
+    public void testEnum() {
+        // 枚举
+        DayEnum dayEnum = Mock.mock(DayEnum.class);
+        System.out.println("DayEnum: " + dayEnum);
+    }
+
     /**
      * 基本类型的数组类型模拟测试
      */

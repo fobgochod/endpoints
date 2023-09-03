@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 public class TimestampDeserializer extends JsonDeserializer<Timestamp> {
 
     @Override
-    public Timestamp deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public Timestamp deserialize(JsonParser p, DeserializationContext context) throws IOException {
         return Timestamp.valueOf(p.getValueAsString());
     }
 }

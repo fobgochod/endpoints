@@ -12,8 +12,8 @@ import java.math.BigInteger;
 public class BigIntegerMocker implements Mocker<BigInteger> {
 
     @Override
-    public BigInteger mock(MockConfig mockConfig) {
-        return BigInteger.valueOf(RandomUtils.nextLong(mockConfig.getLongRange()[0], mockConfig.getLongRange()[1]));
+    public BigInteger mock(MockConfig config) {
+        return BigInteger.valueOf(RandomUtils.nextLong(config.getLongRange()[0], config.getLongRange()[1]));
     }
 
 }

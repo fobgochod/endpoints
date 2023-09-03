@@ -10,7 +10,7 @@ import com.fobgochod.mock.util.RandomUtils;
 public class BooleanMocker implements Mocker<Boolean> {
 
     @Override
-    public Boolean mock(MockConfig mockConfig) {
+    public Boolean mock(MockConfig config) {
         return RandomUtils.nextBoolean();
     }
 }

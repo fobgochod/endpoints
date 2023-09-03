@@ -10,8 +10,8 @@ import java.util.Date;
 public class LocalDateTimeMocker extends AbstractDateMock<LocalDateTime> {
 
     @Override
-    public LocalDateTime mock(MockConfig mockConfig) {
-        super.mock(mockConfig);
+    public LocalDateTime mock(MockConfig config) {
+        super.mock(config);
         Date date = new Date(RandomUtils.nextLong(startTime, endTime));
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }

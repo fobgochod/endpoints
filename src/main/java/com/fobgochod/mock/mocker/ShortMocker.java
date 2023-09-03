@@ -10,7 +10,7 @@ import com.fobgochod.mock.util.RandomUtils;
 public class ShortMocker implements Mocker<Short> {
 
     @Override
-    public Short mock(MockConfig mockConfig) {
-        return (short) RandomUtils.nextInt(mockConfig.getShortRange()[0], mockConfig.getShortRange()[1]);
+    public Short mock(MockConfig config) {
+        return (short) RandomUtils.nextInt(config.getShortRange()[0], config.getShortRange()[1]);
     }
 }

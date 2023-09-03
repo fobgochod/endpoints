@@ -6,7 +6,8 @@ import com.fobgochod.mock.util.RandomUtils;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * 模拟Map
@@ -20,15 +21,11 @@ public class MapMocker implements Mocker<Object> {
     }
 
     @Override
-    public Object mock(MockConfig mockConfig) {
-        int size = RandomUtils.nextSize(mockConfig.getSizeRange()[0], mockConfig.getSizeRange()[1]);
-        Map<Object, Object> result = new HashMap<>(size);
-        BaseMocker keyMocker = new BaseMocker(types[0]);
-        BaseMocker valueMocker = new BaseMocker(types[1]);
-        for (int index = 0; index < size; index++) {
-            result.put(keyMocker.mock(mockConfig), valueMocker.mock(mockConfig));
-        }
-        return result;
+    public Object mock(MockConfig config) {
+        int size = RandomUtils.nextSize(config.getSizeRange()[0], config.getSizeRange()[1]);
+        BaseMocker<?> keyMocker = new BaseMocker<>(types[0]);
+        BaseMocker<?> valueMocker = new BaseMocker<>(types[1]);
+        return IntStream.range(0, size).boxed().collect(Collectors.toMap(index -> keyMocker.mock(config), index -> valueMocker.mock(config), (a, b) -> b, () -> new HashMap<>(size)));
     }
 
 }

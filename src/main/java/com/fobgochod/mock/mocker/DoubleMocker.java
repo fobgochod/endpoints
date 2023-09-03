@@ -10,8 +10,8 @@ import com.fobgochod.mock.util.RandomUtils;
 public class DoubleMocker implements Mocker<Double> {
 
     @Override
-    public Double mock(MockConfig mockConfig) {
-        return RandomUtils.nextDouble(mockConfig.getDoubleRange()[0], mockConfig.getDoubleRange()[1]);
+    public Double mock(MockConfig config) {
+        return RandomUtils.nextDouble(config.getDoubleRange()[0], config.getDoubleRange()[1]);
     }
 
 }
