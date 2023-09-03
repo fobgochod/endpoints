@@ -13,7 +13,7 @@ import kotlin.reflect.jvm.jvmName
 object ParamUtils {
 
     fun classToJson(psiClass: PsiClass): String {
-        val jsonMap = classToMap(psiClass, true)
+        val jsonMap = mockClass(psiClass, true)
         return GsonUtils.toJson(jsonMap)
     }
 
@@ -24,12 +24,8 @@ object ParamUtils {
                 .map { it.type }
                 .firstOrNull()
         if (jvmType is PsiType) {
-            val obj = if (jvmType is PsiClassReferenceType) {
-                mockField(jvmType, jvmType.resolve(), true)
-            } else {
-                mockField(jvmType)
-            }
-            GsonUtils.toJson(obj)
+            val json = mockField(jvmType, null, true)
+            return GsonUtils.toJson(json)
         }
         return ""
     }
@@ -63,15 +59,13 @@ object ParamUtils {
                 .firstOrNull()
     }
 
-
-    private fun classToMap(psiClass: PsiClass, recursion: Boolean): Map<String, Any?> {
+    private fun mockClass(psiClass: PsiClass, recursion: Boolean): Map<String, Any?> {
         val attributes: MutableMap<String, Any?> = mutableMapOf()
         for (field in psiClass.fields) {
-            val psiFieldType = field.type
+            val fieldType = field.type
             val fieldName = field.name
 
-            val filedValue = mockField(psiFieldType, psiClass, recursion)
-            attributes[fieldName] = filedValue
+            attributes[fieldName] = mockField(fieldType, psiClass, recursion)
         }
         return attributes
     }
@@ -95,19 +89,19 @@ object ParamUtils {
                 val ordinal = (0 until fieldClass.fields.size).random()
                 val psiField = fieldClass.fields[ordinal]
                 return psiField.name
-            } else if (isClass(fieldType, List::class.jvmName)) {
+            } else if (isClass(fieldClass, fieldType, List::class.jvmName)) {
                 val parameters = fieldType.parameters
                 if (parameters.isNotEmpty()) {
                     val value = mockField(parameters[0])
                     return if (value == null) emptyList() else listOf(value)
                 }
-            } else if (isClass(fieldType, Set::class.jvmName)) {
+            } else if (isClass(fieldClass, fieldType, Set::class.jvmName)) {
                 val parameters = fieldType.parameters
                 if (parameters.isNotEmpty()) {
                     val value = mockField(parameters[0])
                     return if (value == null) emptySet() else setOf(value)
                 }
-            } else if (isClass(fieldType, Map::class.jvmName)) {
+            } else if (isClass(fieldClass, fieldType, Map::class.jvmName)) {
                 val parameters = fieldType.parameters
                 if (parameters.isNotEmpty()) {
                     val key = mockField(parameters[0])
@@ -116,10 +110,8 @@ object ParamUtils {
                 }
             } else {
                 if (fieldClass == psiClass && !recursion) {
-                    // if (isClass(fieldType, psiClass.qualifiedName) && !recursion) {
-                    // self recursion
                 } else {
-                    return classToMap(fieldClass, false)
+                    return mockClass(fieldClass, false)
                 }
             }
         }
@@ -129,12 +121,10 @@ object ParamUtils {
     /**
      * 字段是否为指定类型
      */
-    private fun isClass(psiFieldType: PsiClassReferenceType, qualifiedName: String?): Boolean {
-        val fieldClass = psiFieldType.resolve() ?: return false
+    private fun isClass(fieldClass: PsiClass, psiFieldType: PsiClassReferenceType, qualifiedName: String): Boolean {
         if (fieldClass.qualifiedName == qualifiedName) {
             return true
         }
-
         for (psiType in psiFieldType.rawType().superTypes) {
             if (psiType.canonicalText == qualifiedName) {
                 return true

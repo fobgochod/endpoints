@@ -38,7 +38,7 @@ class EndpointEntity(
         }
     }
 
-    fun reset() {
+    private fun reset() {
         val params = ParamUtils.getRequestParams(psiMethod, RequestParams.RequestParam)
         val paths = ParamUtils.getRequestParams(psiMethod, RequestParams.PathVariable)
         val headers = state.httpHeaders.associate { it.key to it.value }

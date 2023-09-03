@@ -1,4 +1,4 @@
-# [![Plugin Logo](src/main/resources/META-INF/pluginIcon.svg)][plugin:logo] Endpoints
+# [![Plugin Logo](src/main/resources/META-INF/pluginIcon.svg)][plugin:logo] Endpoints View
 
 [![Build Status][badge:build]][gh:workflow-build]
 [![License][badge:license]][gh:license]
@@ -10,27 +10,19 @@
 
 <!-- Plugin description -->
 
-## Usage
-
-- Click birdie or press **Alt + Q** open formatter dialog
-- Click outside or press **Alt + Enter** to be completed
-
 <!-- Plugin description end -->
 
 ## Installation
 
 - Using IDE built-in plugin system:
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Git Commit Message
-  Format"</kbd> >
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Endpoints View"</kbd> >
   <kbd>Install Plugin</kbd>
 
 - Manually:
   Download the [latest release][gh:releases] or [JetBrains Plugin Marketplace][plugin:versions] and install it
   manually using <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from
   disk...</kbd>
-
-## Usage
 
 ## Reference
 
@@ -39,8 +31,7 @@
 
 ## License
 
-The Git Commit Message Format is released under version 2.0 of
-the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+The Endpoints View is released under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
 
 
 [//]: # (@formatter:off)
