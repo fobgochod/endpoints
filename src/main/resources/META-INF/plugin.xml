@@ -23,8 +23,7 @@
 
         <notificationGroup id="Endpoints Notification" displayType="BALLOON" key="notification.group.name"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.fobgochod.endpoints.provider.EndpointsLineMarkerProvider"/>
+<!--        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.fobgochod.endpoints.provider.EndpointsLineMarkerProvider"/>-->
     </extensions>
 
     <actions>

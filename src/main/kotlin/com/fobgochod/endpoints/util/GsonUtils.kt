@@ -13,6 +13,7 @@ object GsonUtils {
 
     private val gson: Gson = GsonBuilder()
             .setPrettyPrinting()
+            .serializeNulls()
             .setDateFormat(Constants.DATETIME_PATTERN)
             .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
             .registerTypeAdapter(LocalTime::class.java, LocalTimeAdapter())

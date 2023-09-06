@@ -13,18 +13,15 @@ import kotlin.reflect.jvm.jvmName
 object ParamUtils {
 
     fun classToJson(psiClass: PsiClass): String {
-        val jsonMap = mockClass(psiClass, true)
+        val jsonMap = mockClass(psiClass, 0)
         return GsonUtils.toJson(jsonMap)
     }
 
     fun getRequestBody(psiMethod: PsiMethod, requestParams: RequestParams): String {
         val parameters = psiMethod.parameters
-        val jvmType = parameters
-                .filter { getParameterAnnotation(it, requestParams) != null }
-                .map { it.type }
-                .firstOrNull()
+        val jvmType = parameters.filter { getParameterAnnotation(it, requestParams) != null }.map { it.type }.firstOrNull()
         if (jvmType is PsiType) {
-            val json = mockField(jvmType, null, true)
+            val json = mockField(jvmType, 0)
             return GsonUtils.toJson(json)
         }
         return ""
@@ -53,24 +50,67 @@ object ParamUtils {
     }
 
     private fun getParameterAnnotation(parameter: JvmParameter, annotation: RequestParams): PsiAnnotation? {
-        return parameter.annotations
-                .filter { it.qualifiedName == annotation.qualifiedName }
-                .map { it as PsiAnnotation }
-                .firstOrNull()
+        return parameter.annotations.filter { it.qualifiedName == annotation.qualifiedName }.map { it as PsiAnnotation }.firstOrNull()
     }
 
-    private fun mockClass(psiClass: PsiClass, recursion: Boolean): Map<String, Any?> {
+    private fun mockClass(psiClass: PsiClass, depth: Int): Map<String, Any?> {
         val attributes: MutableMap<String, Any?> = mutableMapOf()
         for (field in psiClass.fields) {
             val fieldType = field.type
             val fieldName = field.name
 
-            attributes[fieldName] = mockField(fieldType, psiClass, recursion)
+            if (isSelf(fieldType, psiClass)) {
+                if (depth >= 0) {
+                    attributes[fieldName] = getNullValue(fieldType)
+                } else {
+                    attributes[fieldName] = mockField(fieldType, depth + 1)
+                }
+            } else {
+                attributes[fieldName] = mockField(fieldType, depth)
+            }
         }
         return attributes
     }
 
-    private fun mockField(fieldType: PsiType, psiClass: PsiClass? = null, recursion: Boolean = false): Any? {
+    private fun getNullValue(fieldType: PsiType): Any? {
+        if (fieldType is PsiArrayType) {
+            return emptyArray<String>()
+        } else if (fieldType is PsiClassReferenceType) {
+            val fieldClass = fieldType.resolve()
+            if (fieldClass == null) {
+                return null
+            } else if (isClass(fieldClass, fieldType, List::class.jvmName)) {
+                return emptyList<String>()
+            } else if (isClass(fieldClass, fieldType, Set::class.jvmName)) {
+                return emptySet<String>()
+            } else if (isClass(fieldClass, fieldType, Map::class.jvmName)) {
+                return emptyMap<String, String>()
+            }
+        }
+        return null
+    }
+
+    private fun isSelf(fieldType: PsiType, psiClass: PsiClass): Boolean {
+        if (fieldType is PsiArrayType) {
+            return isSelf(fieldType.componentType, psiClass)
+        } else if (fieldType is PsiClassReferenceType) {
+            val fieldClass = fieldType.resolve()
+            return if (fieldClass == null) {
+                false
+            } else if (isClass(fieldClass, fieldType, List::class.jvmName)) {
+                isSelf(fieldType.parameters[0], psiClass)
+            } else if (isClass(fieldClass, fieldType, Set::class.jvmName)) {
+                isSelf(fieldType.parameters[0], psiClass)
+            } else if (isClass(fieldClass, fieldType, Map::class.jvmName)) {
+                isSelf(fieldType.parameters[1], psiClass)
+            } else {
+                fieldClass == psiClass
+            }
+        }
+        return false
+    }
+
+    private fun mockField(fieldType: PsiType, depth: Int = 0): Any? {
         val qualifiedName = fieldType.canonicalText
 
         if (fieldType is PsiPrimitiveType) {
@@ -79,7 +119,7 @@ object ParamUtils {
             return getJavaBaseTypeValue(qualifiedName)
         } else if (fieldType is PsiArrayType) {
             val psiType = fieldType.componentType
-            val value = mockField(psiType)
+            val value = mockField(psiType, depth)
             return if (value == null) emptyList() else listOf(value)
         } else if (fieldType is PsiClassReferenceType) {
             val fieldClass = fieldType.resolve()
@@ -92,27 +132,24 @@ object ParamUtils {
             } else if (isClass(fieldClass, fieldType, List::class.jvmName)) {
                 val parameters = fieldType.parameters
                 if (parameters.isNotEmpty()) {
-                    val value = mockField(parameters[0])
+                    val value = mockField(parameters[0], depth)
                     return if (value == null) emptyList() else listOf(value)
                 }
             } else if (isClass(fieldClass, fieldType, Set::class.jvmName)) {
                 val parameters = fieldType.parameters
                 if (parameters.isNotEmpty()) {
-                    val value = mockField(parameters[0])
+                    val value = mockField(parameters[0], depth)
                     return if (value == null) emptySet() else setOf(value)
                 }
             } else if (isClass(fieldClass, fieldType, Map::class.jvmName)) {
                 val parameters = fieldType.parameters
                 if (parameters.isNotEmpty()) {
-                    val key = mockField(parameters[0])
-                    val value = mockField(parameters[1])
+                    val key = mockField(parameters[0], depth)
+                    val value = mockField(parameters[1], depth)
                     return mapOf(key to value)
                 }
             } else {
-                if (fieldClass == psiClass && !recursion) {
-                } else {
-                    return mockClass(fieldClass, false)
-                }
+                return mockClass(fieldClass, depth)
             }
         }
         return null
