@@ -19,7 +19,7 @@ class ReformatDataAction : EndpointsAction() {
     override fun actionPerformed(e: AnActionEvent, project: Project) {
         val component = e.dataContext.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
         if (component is HttpTextField) {
-            component.text = GsonUtils.toJson(component.text)
+            component.text = GsonUtils.format(component.text)
         }
     }
 }

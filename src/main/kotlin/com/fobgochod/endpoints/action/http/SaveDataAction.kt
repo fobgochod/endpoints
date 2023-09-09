@@ -9,19 +9,18 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 
-class ResetDataAction : EndpointsAction() {
+class SaveDataAction : EndpointsAction() {
 
     init {
-        templatePresentation.icon = AllIcons.General.Reset
-        templatePresentation.text = EndpointsBundle.message("action.http.test.reset.data.text")
+        templatePresentation.icon = AllIcons.Actions.MenuSaveall
+        templatePresentation.text = EndpointsBundle.message("action.http.test.save.data.text")
     }
 
     override fun actionPerformed(e: AnActionEvent, project: Project) {
         val selectPath = PsiFileUtils.getSelectedPath(project)
         if (selectPath is EndpointNode) {
-            selectPath.source.reset(true)
             val view = EndpointsManager.getView(project)
-            view.testPanel.reset(selectPath.source)
+            view.testPanel.apply(selectPath.source)
         }
     }
 }

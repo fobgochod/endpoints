@@ -33,6 +33,7 @@ class EndpointsSettingsConfigurable : BoundSearchableConfigurable(
     private val hideEmptyMiddlePackages get() = CheckboxDescriptor(IdeBundle.message("action.hide.empty.middle.packages"), state::flattenPackages)
     private val showClass get() = CheckboxDescriptor(message("settings.system.show.class"), state::showClass)
     private val showMethod get() = CheckboxDescriptor(message("settings.system.show.method"), state::showMethod)
+    private val mockData get() = CheckboxDescriptor(message("settings.http.test.mock.data"), state::mockData)
     private val cacheParam get() = CheckboxDescriptor(message("settings.http.test.cache.param"), state::cacheParam)
     // @formatter:on
 
@@ -63,11 +64,23 @@ class EndpointsSettingsConfigurable : BoundSearchableConfigurable(
                 }
             }
 
-            group(message("settings.http.test.group")) {
+            group(message("settings.json.tool.group")) {
+                row {
+                    checkBox(cacheParam)
+                }
 
+                row {
+                    checkBox(mockData)
+                }
+
+                row(message("settings.http.test.recursion.depth")) {
+                    spinner(0 until 10).bindIntValue(state::recursionDepth)
+                }
+            }
+
+            group(message("settings.http.test.group")) {
                 row(message("settings.http.test.http.timeout")) {
                     intTextField().bindIntText(state::httpTimeout)
-                    checkBox(cacheParam)
                 }
 
                 row(message("settings.http.test.default.port")) {

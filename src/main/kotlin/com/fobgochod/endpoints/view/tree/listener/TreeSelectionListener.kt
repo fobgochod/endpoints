@@ -17,7 +17,7 @@ class TreeSelectionListener(val project: Project) : TreeSelectionListener {
         if (selectedPath is EndpointNode) {
             val entity = selectedPath.source
             entity.reset(false)
-            view.testPanel.apply(entity)
+            view.testPanel.reset(entity)
         }
     }
 }

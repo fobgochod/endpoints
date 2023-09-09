@@ -2,8 +2,10 @@ package com.fobgochod.endpoints.util
 
 import com.fobgochod.endpoints.domain.spring.RequestParams
 import com.fobgochod.endpoints.framework.PsiJavaUtils
+import com.fobgochod.endpoints.settings.EndpointsSettings
 import com.fobgochod.mock.Mock
 import com.fobgochod.mock.enums.BaseType
+import com.fobgochod.mock.enums.PrimitiveBean
 import com.intellij.lang.jvm.JvmParameter
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
@@ -12,8 +14,10 @@ import kotlin.reflect.jvm.jvmName
 @Suppress("UnstableApiUsage")
 object ParamUtils {
 
+    private val state = EndpointsSettings.instance
+
     fun classToJson(psiClass: PsiClass): String {
-        val jsonMap = mockClass(psiClass, 0)
+        val jsonMap = mockClass(psiClass, state.recursionDepth)
         return GsonUtils.toJson(jsonMap)
     }
 
@@ -21,7 +25,7 @@ object ParamUtils {
         val parameters = psiMethod.parameters
         val jvmType = parameters.filter { getParameterAnnotation(it, requestParams) != null }.map { it.type }.firstOrNull()
         if (jvmType is PsiType) {
-            val json = mockField(jvmType, 0)
+            val json = mockField(jvmType, state.recursionDepth)
             return GsonUtils.toJson(json)
         }
         return ""
@@ -45,6 +49,9 @@ object ParamUtils {
     }
 
     private fun getJavaBaseTypeValue(paramType: String): Any? {
+        if (!state.mockData) {
+            return PrimitiveBean.of(paramType)
+        }
         val baseType = BaseType.get(paramType) ?: return null
         return Mock.mock(baseType.clazz)
     }
@@ -60,10 +67,10 @@ object ParamUtils {
             val fieldName = field.name
 
             if (isSelf(fieldType, psiClass)) {
-                if (depth >= 0) {
+                if (depth <= 0) {
                     attributes[fieldName] = getNullValue(fieldType)
                 } else {
-                    attributes[fieldName] = mockField(fieldType, depth + 1)
+                    attributes[fieldName] = mockField(fieldType, depth - 1)
                 }
             } else {
                 attributes[fieldName] = mockField(fieldType, depth)

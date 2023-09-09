@@ -26,6 +26,11 @@ object GsonUtils {
         return gson.toJson(any)
     }
 
+    fun format(str: String?): String {
+        val parse: JsonElement = JsonParser.parseString(str)
+        return gson.toJson(parse)
+    }
+
     fun toMap(json: String): Map<String, Any?> {
         return gson.fromJson(json, TypeToken.getParameterized(Map::class.java, String::class.java, Any::class.java).type)
     }

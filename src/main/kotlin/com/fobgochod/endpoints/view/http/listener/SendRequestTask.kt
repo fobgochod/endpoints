@@ -69,9 +69,7 @@ internal class SendRequestTask(private val testPane: EndpointsTestPane) :
             builder.timeout(Duration.ofSeconds(timeout))
         }
 
-        headers.forEach {
-            builder.header(it.key, it.value)
-        }
+        headers.forEach { builder.header(it.key, it.value) }
         response = HttpClient.newHttpClient()
                 .send(builder.build(), HttpResponse.BodyHandlers.ofString())
     }
@@ -91,7 +89,7 @@ internal class SendRequestTask(private val testPane: EndpointsTestPane) :
 
         val selectedPath = PsiFileUtils.getSelectedPath(project)
         if (selectedPath is EndpointNode) {
-            testPane.reset(selectedPath.source)
+            testPane.apply(selectedPath.source)
         }
     }
 

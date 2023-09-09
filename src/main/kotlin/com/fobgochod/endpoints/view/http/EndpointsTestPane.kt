@@ -53,7 +53,7 @@ class EndpointsTestPane(val project: Project) : JPanel(BorderLayout()) {
         updateUI()
     }
 
-    fun apply(entity: EndpointEntity) {
+    fun reset(entity: EndpointEntity) {
         httpMethod.selectedItem = entity.method
         httpServer.text = entity.getRequestUrl()
 
@@ -63,7 +63,7 @@ class EndpointsTestPane(val project: Project) : JPanel(BorderLayout()) {
         bodyPane.text = entity.body
     }
 
-    fun reset(entity: EndpointEntity) {
+    fun apply(entity: EndpointEntity) {
         entity.clear()
         entity.params.putAll(GsonUtils.toMap(paramsPane.text))
         entity.paths.putAll(GsonUtils.toMap(pathsPane.text))

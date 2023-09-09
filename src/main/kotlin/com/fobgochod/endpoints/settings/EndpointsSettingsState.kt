@@ -23,6 +23,12 @@ class EndpointsSettingsState : BaseState() {
     @get:OptionTag("SHOW_METHOD")
     var showMethod by property(true)
 
+    @get:OptionTag("MOCK_DATA")
+    var mockData by property(false)
+
+    @get:OptionTag("RECURSION_DEPTH")
+    var recursionDepth by property(0)
+
     @get:OptionTag("HTTP_TIMEOUT")
     var httpTimeout by property(60)
 

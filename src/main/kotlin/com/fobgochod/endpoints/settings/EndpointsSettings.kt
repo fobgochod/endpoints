@@ -49,6 +49,18 @@ class EndpointsSettings : PersistentStateComponent<EndpointsSettingsState> {
             state.showMethod = value
         }
 
+    var mockData: Boolean
+        get() = state.mockData
+        set(value) {
+            state.mockData = value
+        }
+
+    var recursionDepth: Int
+        get() = state.recursionDepth
+        set(value) {
+            state.recursionDepth = value
+        }
+
     var httpTimeout: Int
         get() = state.httpTimeout
         set(value) {

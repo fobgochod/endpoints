@@ -21,6 +21,12 @@ import static org.junit.Assert.assertSame;
 public class MockTest {
 
     @Test
+    public void testJson(){
+        String json = JsonUtils.toJson(new BasicBean());
+        System.out.println("json = " + json);
+    }
+
+    @Test
     public void testString() {
         for (int i = 1; i <= 10; i++) {
             System.err.println(i + ": " + Mock.mock(String.class));
