@@ -30,8 +30,6 @@
         <group id="com.fobgochod.endpoints.action.editor.EditorActionGroup"
                class="com.fobgochod.endpoints.action.editor.EditorActionGroup"
                popup="true">
-            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$Paste"/>
-
             <action id="Endpoint.SelectEndpointAction"
                     class="com.fobgochod.endpoints.action.editor.SelectEndpointAction"/>
             <action id="Endpoint.ShowClassEndpointAction"
@@ -40,6 +38,15 @@
                     class="com.fobgochod.endpoints.action.editor.CopyPathEndpointAction"/>
             <action id="Endpoint.CopyFullUrlEndpointAction"
                     class="com.fobgochod.endpoints.action.editor.CopyFullUrlEndpointAction"/>
+        </group>
+
+        <group id="EndpointPopupMenu" text="Endpoint Popup Menu Actions">
+            <separator/>
+            <action id="Endpoint.ClassToJsonAction" class="com.fobgochod.endpoints.action.tool.ClassToJsonAction"/>
+            <reference ref="com.fobgochod.endpoints.action.editor.EditorActionGroup"/>
+            <separator/>
+
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </group>
 
         <group id="com.fobgochod.endpoints.action.http.HttpTestActionGroup"
@@ -54,10 +61,6 @@
             <action id="Endpoint.ReformatDataAction"
                     class="com.fobgochod.endpoints.action.http.ReformatDataAction"/>
         </group>
-
-        <action id="Endpoint.ClassToJsonAction" class="com.fobgochod.endpoints.action.tool.ClassToJsonAction">
-            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-        </action>
 
         <group id="com.fobgochod.endpoints.action.toolbar.ToolbarActionGroup"
                class="com.fobgochod.endpoints.action.toolbar.ToolbarActionGroup">
